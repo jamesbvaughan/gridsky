@@ -2,5 +2,6 @@
   "client_id": "https://gridsky.james.land/client-metadata.json",
   "redirect_uris": ["https://gridsky.james.land"],
   "scope": "atproto transition:generic",
-  "token_endpoint_auth_method": "none"
+  "token_endpoint_auth_method": "none",
+  "dpop_bound_access_tokens": true
 }
