@@ -1,18 +1,22 @@
-import { memo, useEffect, useState } from "react";
-import "./lib/bsky";
-import { agent } from "./lib/bsky";
+import { memo, useContext, useEffect, useState } from "react";
 import {
   ProfileView,
   ProfileViewDetailed,
 } from "@atproto/api/dist/client/types/app/bsky/actor/defs";
 import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs";
+import { AgentContext } from "./AgentContext";
 
 const Block = memo(function Block({ profile }: { profile: ProfileView }) {
   console.log(profile.handle);
   const [post, setPost] = useState<FeedViewPost | null>(null);
+  const agent = useContext(AgentContext);
 
   useEffect(() => {
+    if (!agent) {
+      return;
+    }
+
     agent
       .getAuthorFeed({
         actor: profile.handle,
@@ -27,7 +31,7 @@ const Block = memo(function Block({ profile }: { profile: ProfileView }) {
 
         setPost(response.data.feed[0]);
       });
-  }, [profile.handle]);
+  }, [agent, profile.handle]);
 
   const profileUrl = `https://bsky.app/profile/${profile.handle}`;
 
@@ -124,8 +128,13 @@ function FollowsGridInner({ follows }: { follows: ProfileView[] }) {
 
 function FollowsGrid() {
   const [follows, setFollows] = useState<ProfileView[] | null>(null);
+  const agent = useContext(AgentContext);
 
   useEffect(() => {
+    if (!agent) {
+      return;
+    }
+
     agent.getFollows({ actor: agent.assertDid }).then((response) => {
       if (!response.success) {
         console.error(response.data);
@@ -135,7 +144,7 @@ function FollowsGrid() {
       console.log("Got follows");
       setFollows(response.data.follows);
     });
-  }, []);
+  }, [agent]);
 
   if (!follows) {
     return "loading follows...";
@@ -146,8 +155,13 @@ function FollowsGrid() {
 
 function Header() {
   const [profile, setProfile] = useState<ProfileViewDetailed | null>(null);
+  const agent = useContext(AgentContext);
 
   useEffect(() => {
+    if (!agent) {
+      return;
+    }
+
     agent.getProfile({ actor: agent.assertDid }).then((response) => {
       if (!response.success) {
         console.error(response.data);
@@ -156,7 +170,7 @@ function Header() {
 
       setProfile(response.data);
     });
-  }, []);
+  }, [agent]);
 
   return (
     <div className="flex items-center justify-between border-2 border-black p-2">
