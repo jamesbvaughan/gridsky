@@ -7,10 +7,9 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { AgentContext } from "./AgentContext";
 
 const IS_DEV = process.env.NODE_ENV == "development";
-const ORIGIN = IS_DEV ? "http://127.0.0.1:5173" : "TODO";
+const ORIGIN = IS_DEV ? "http://127.0.0.1:5173" : "https://gridsky.james.land";
 
 const SCOPE = "atproto transition:generic";
-// const REDIRECT_URI = `${ORIGIN}/atproto-oauth-callback`;
 const REDIRECT_URI = ORIGIN;
 
 const enc = encodeURIComponent;
