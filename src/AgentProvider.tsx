@@ -19,7 +19,7 @@ const oauthClient = new BrowserOAuthClient({
   clientMetadata: {
     client_id: IS_DEV
       ? `http://localhost?redirect_uri=${enc(REDIRECT_URI)}&scope=${enc(SCOPE)}`
-      : `${ORIGIN}/oauth/client-metadata.json`,
+      : `${ORIGIN}/client-metadata.json`,
     redirect_uris: [REDIRECT_URI],
     scope: SCOPE,
     token_endpoint_auth_method: "none",
