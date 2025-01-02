@@ -8,7 +8,6 @@ import { FeedViewPost } from "@atproto/api/dist/client/types/app/bsky/feed/defs"
 import { AgentContext } from "./AgentContext";
 
 const Block = memo(function Block({ profile }: { profile: ProfileView }) {
-  console.log(profile.handle);
   const [post, setPost] = useState<FeedViewPost | null>(null);
   const agent = useContext(AgentContext);
 
@@ -34,11 +33,12 @@ const Block = memo(function Block({ profile }: { profile: ProfileView }) {
   }, [agent, profile.handle]);
 
   const profileUrl = `https://bsky.app/profile/${profile.handle}`;
+  const name = profile.displayName ?? profile.handle;
 
-  console.log(post);
+  console.log(post?.post);
 
   return (
-    <div className="h-full overflow-scroll border-2 border-black p-2">
+    <div className="h-full space-y-4 overflow-scroll border-2 border-black p-2">
       <div className="flex items-start space-x-2">
         <a
           className="shrink-0"
@@ -48,32 +48,38 @@ const Block = memo(function Block({ profile }: { profile: ProfileView }) {
         >
           <img src={profile.avatar} height="50" width="50" />
         </a>
-        <div>
-          <div className="font-bold">
-            <a href={profileUrl} target="_blank" rel="noopener">
-              {profile.displayName ?? profile.handle}
+
+        <div className="min-w-0">
+          <div className="truncate text-xl font-bold">
+            <a href={profileUrl} target="_blank" rel="noopener" title={name}>
+              {name}
             </a>
           </div>
-          <div>{profile.description}</div>
+
+          <div className="truncate" title={profile.description}>
+            {profile.description}
+          </div>
         </div>
       </div>
 
-      {post ? (
-        <>
-          {"text" in post.post.record ? post.post.record.text : null}
-          {"embed" in post.post && post.post.embed != null ? (
-            <>
-              {"images" in post.post.embed
-                ? post.post.embed.images.map((image) => (
-                    <img src={image.thumb} />
-                  ))
-                : null}
-            </>
-          ) : null}
-        </>
-      ) : (
-        "Loading..."
-      )}
+      <div>
+        {post ? (
+          <>
+            {"text" in post.post.record ? post.post.record.text : null}
+            {"embed" in post.post && post.post.embed != null ? (
+              <>
+                {"images" in post.post.embed
+                  ? post.post.embed.images.map((image) => (
+                      <img src={image.thumb} />
+                    ))
+                  : null}
+              </>
+            ) : null}
+          </>
+        ) : (
+          "Loading..."
+        )}
+      </div>
     </div>
   );
 });
